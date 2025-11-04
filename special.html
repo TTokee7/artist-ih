@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>YOUNG POSSE UNOFFICIAL</title>
+    <link rel="icon"
+        href="https://image.static.bstage.in/cdn-cgi/image/metadata=none/youngposse/661e223c-a424-43d8-ba0e-400c434b5030/6f5ae123-0c39-4feb-806d-f16dee51d2c6/ori.png">
+    <link rel="stylesheet" href="css/ress.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div id="startScreen" class="start-screen">
+        <div class="start-content">
+            <p>イントロクイズやってみ？</p>
+            <button id="startBtn">はい</button>
+        </div>
+    </div>
+
+    <nav class="main-navigation">
+        <ul class="pages">
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="news.html">NEWS</a></li>
+            <li><a href="biography.html">BIOGRAPHY</a></li>
+            <li><a href="discography.html">DISCOGRAPHY</a></li>
+            <li><a href="special.html" style="color: #000000;">SPECIAL</a></li>
+        </ul>
+        <ul class="sns-btn">
+            <li><a href="https://youngposse.bstage.in/" target="_blank">
+                    <img src="https://image.static.bstage.in/cdn-cgi/image/metadata=none/youngposse/661e223c-a424-43d8-ba0e-400c434b5030/6f5ae123-0c39-4feb-806d-f16dee51d2c6/ori.png"
+                        alt=""></a></li>
+            <li><a href="https://www.youtube.com/@YOUNGPOSSEUP?app=desktop" target="_blank"><img
+                        src="images/youtube.png" alt=""></a>
+            </li>
+            <li><a href="https://www.tiktok.com/@youngposseup" target="_blank"><img src="images/tiktok.png" alt=""></a>
+            </li>
+            <li><a href="https://www.instagram.com/youngposseup/" target="_blank"><img src="images/instagram.png"
+                        alt=""></a></li>
+            <li><a href="https://x.com/youngposseup" target="_blank"><img src="images/X.png" alt=""></a></li>
+            <li><a href="https://weibo.com/u/7982215951" target="_blank"><img src="images/weibo.png" alt=""></a></li>
+        </ul>
+    </nav>
+
+    <div class="wrapper">
+        <section class="section-special">
+            <div class="item-special">
+                <div class="item-special-left">
+                    <div class="game">
+                        <h4>♪((‹( 'ω' )›))♪</h4>
+                        <h1>イントロクイズ</h1>
+                        <div id="quizContainer"></div>
+                        <div id="result"></div>
+                        <br>
+                        <button id="openBagBtn" class="hidden">🎁 プレゼントを開ける</button>
+                        <!-- <br> -->
+                        <div id="openedText" class="hidden">フォトカードをゲットしました！</div>
+                        <img id="cardImage" src="" alt="フォトカード">
+                        <br>
+                        <br>
+                        <button id="retryBtn" class="hidden">もう一度挑戦する</button>
+                    </div>
+
+                </div>
+                <div class="item-special-right">
+                    <img src="images/ori.jpg" alt="YOUNG POSSE 写真">
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.getElementById('startBtn').addEventListener('click', function () {
+            const startScreen = document.getElementById('startScreen');
+            startScreen.classList.add('fade-out');
+
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+            }, 800);
+        });
+
+
+
+        const quizData = [
+            {
+                audio: "audio/audio1.m4a",
+                options: ["Blue Dot", "Skyline", "XXL"],
+                answer: "Blue Dot"
+            },
+            {
+                audio: "audio/audio2.m4a",
+                options: ["ROTY", "XXL", "Scars"],
+                answer: "XXL"
+            },
+            {
+                audio: "audio/audio3.m4a",
+                options: ["Cooing", "Umbrella", "COLD"],
+                answer: "COLD"
+            },
+            {
+                audio: "audio/audio4.m4a",
+                options: ["Umbrella", "Cooing", "Loading..."],
+                answer: "Umbrella"
+            },
+            {
+                audio: "audio/audio5.m4a",
+                options: ["OTB", "ROTY", "ATE THAT"],
+                answer: "ROTY"
+            }
+        ];
+
+        const photoCards = ["./images/jiana02.JPG", "./images/doeun02.JPG", "./images/sunhye02.avif", "./images/yeonjung02.JPG", "./images/jieun02.JPG"];
+        let currentQuestion = 0;
+        let score = 0;
+        let opened = false;
+
+        const quizContainer = document.getElementById("quizContainer");
+        const result = document.getElementById("result");
+        const openBagBtn = document.getElementById("openBagBtn");
+        const cardImage = document.getElementById("cardImage");
+        const openedText = document.getElementById("openedText");
+        const retryBtn = document.getElementById("retryBtn");
+
+        function loadQuestion() {
+            const q = quizData[currentQuestion];
+            quizContainer.innerHTML = `
+    <div class="question">
+      <p>Q${currentQuestion + 1}：曲を聴いて選んでください</p>
+      <audio controls src="${q.audio}"></audio>
+      <div>
+        ${q.options.map(opt => `<button onclick="answer('${opt}')">${opt}</button>`).join('')}
+      </div>
+    </div>
+  `;
+        }
+
+        window.answer = function (selected) {
+            const correct = quizData[currentQuestion].answer;
+            if (selected === correct) {
+                alert("٩(๑ᵒ̴̶̷͈̀ ᗜ ᵒ̴̶̷͈́)و ̑̑ ✧ 正解~!");
+                score++;
+            } else {
+                alert("(｡ŏ_ŏ)不正解…");
+            }
+
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        };
+
+        function showResult() {
+            quizContainer.innerHTML = "";
+            result.innerHTML = `あなたのスコア：${score} / ${quizData.length}`;
+            if (score >= 3) {
+                result.innerHTML += "<br><br>(*･ω･ﾉﾉﾞ☆ﾊﾟﾁﾊﾟﾁ 合格！";
+                openBagBtn.classList.remove("hidden");
+            } else {
+                result.innerHTML += "<br><br>(｡>﹏<｡) 残念… 再挑戦してね";
+            }
+            retryBtn.classList.remove("hidden");
+        }
+
+        openBagBtn.onclick = () => {
+            if (!opened) {
+                const randomCard = photoCards[Math.floor(Math.random() * photoCards.length)];
+                cardImage.src = randomCard;
+                cardImage.style.display = "block";
+                openBagBtn.classList.add("hidden");
+                openedText.classList.remove("hidden");
+                opened = true;
+            }
+        };
+
+        retryBtn.onclick = () => {
+            currentQuestion = 0;
+            score = 0;
+            opened = false;
+            openBagBtn.classList.add("hidden");
+            openedText.classList.add("hidden");
+            cardImage.style.display = "none";
+            result.innerHTML = "";
+            retryBtn.classList.add("hidden");
+            loadQuestion();
+        };
+
+        loadQuestion();
+    </script>
+
+</body>
+
+</html>
